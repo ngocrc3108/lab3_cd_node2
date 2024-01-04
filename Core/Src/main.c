@@ -26,20 +26,12 @@
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
-#define NODE2
-#ifdef NODE1
-#define TX_ID 0x012
-#define RX_ID 0x0A2
-#endif
-#ifdef NODE2
 #define TX_ID 0x0A2
 #define RX_ID 0x012
-#endif
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -53,6 +45,8 @@ CAN_HandleTypeDef hcan;
 UART_HandleTypeDef huart1;
 
 /* USER CODE BEGIN PV */
+uint8_t data[8];
+
 uint8_t calc_SAE_J1850(uint8_t data[],uint8_t crc_len)
 {
 	uint8_t idx, crc, temp1, temp2, idy;
@@ -151,7 +145,9 @@ int main(void)
   MX_USART1_UART_Init();
   /* USER CODE BEGIN 2 */
   CAN_Init();
-  uint8_t data[8] = {7};
+  data[0] = 5; // data byte0
+  data[1] = 7; // data byte1
+  data[6] = 0; // message counter
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -159,7 +155,8 @@ int main(void)
   while (1)
   {
   	CAN_Transmit(data, 8);
-	  HAL_Delay(100);
+    data[6]++; // update message counter
+	  HAL_Delay(200);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
