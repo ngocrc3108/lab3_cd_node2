@@ -156,7 +156,8 @@ int main(void)
   {
   	CAN_Transmit(data, 8);
     data[6]++; // update message counter
-	  HAL_Delay(200);
+  	HAL_GPIO_TogglePin(LEDB_GPIO_Port, LEDB_Pin);
+	  HAL_Delay(20);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -286,18 +287,18 @@ static void MX_GPIO_Init(void)
 
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOD_CLK_ENABLE();
-  __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LEDR_GPIO_Port, LEDR_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOB, LEDB_Pin|LEDR_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : LEDR_Pin */
-  GPIO_InitStruct.Pin = LEDR_Pin;
+  /*Configure GPIO pins : LEDB_Pin LEDR_Pin */
+  GPIO_InitStruct.Pin = LEDB_Pin|LEDR_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LEDR_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 /* USER CODE BEGIN MX_GPIO_Init_2 */
 /* USER CODE END MX_GPIO_Init_2 */
@@ -308,6 +309,7 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan) {
 	uint8_t RcvBuf[8];
 	CAN_RxHeaderTypeDef RxHeader;
 	HAL_CAN_GetRxMessage(hcan, CAN_FILTER_FIFO0, &RxHeader, RcvBuf);
+	HAL_GPIO_TogglePin(LEDR_GPIO_Port, LEDR_Pin);
 }
 /* USER CODE END 4 */
 
